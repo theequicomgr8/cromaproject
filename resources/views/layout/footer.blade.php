@@ -248,25 +248,33 @@
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
    </div>
    <div class="form-body">
-      <form>
+      <form method="post" action="{{Route('laptop.assign')}}" >
+         @csrf
+         <input type="hidden" name="deviceid">
          <fieldset class="form-border rounded-3 p-3 text-start">
             <legend class="float-none w-auto px-2 m-0">Laptop Assign</legend>
             <div class="d-grid gap-3">
                <div class="form-re">   
-                  <input type="date" name="from" value="" class="my-from-control"  placeholder="Assign on" required>
+                  <input type="date" name="assign_date" value="" class="my-from-control"  placeholder="Assign on" required>
                </div>
                <div class="form-re">   
-                  <input type="text" value="" class="my-from-control" id="searchname"  placeholder="Search by employee name, employee Id">
+                  <input type="text" name="empcode" required  class="my-from-control searchempname" id="searchempname" onkeyup="getemp(this)"  placeholder="Search by employee name, employee Id 1">
                </div> 
                <!-- search list here assign persone name and id  -->
-               <div class="assign-list-date d-grid gap-3">
+               <div class="assign-list-date d-grid gap-3 search_emp">
+                  @php 
+                  $employee=App\Models\Employee::where('status','1')->limit(3)->get();
+                  @endphp 
+                  @foreach($employee as $value)
                   <div class="search-assign-persone d-flex align-items-center justify-content-between">
                      <div class="assign-pe-det d-flex gap-2 align-items-center">
                         <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
-                        <h4>Shubham Gupta <span>CC-358</span></h4>
+                        <h4>{{$value->name}} <span>{{$value->empcode}}</span></h4>
                      </div>
-                     <input type="radio" name="checked" id="" data-cid="CC-358" data-name="Shubham Gupta" class="click_radio">
+                     <input type="radio" name="checked" id="" data-cid="{{$value->empcode}}" data-name="{{$value->name}}" class="click_radio" >
                   </div>
+                  @endforeach 
+                  <!--
                   <div class="search-assign-persone d-flex align-items-center justify-content-between">
                      <div class="assign-pe-det d-flex gap-2 align-items-center">
                         <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
@@ -280,12 +288,12 @@
                         <h4>Pankaj Sharma <span>CC-308</span></h4>
                      </div>
                      <input type="radio" name="checked" id="" data-cid="CC-308" data-name="Pankaj Sharma" class="click_radio">
-                  </div> 
+                  </div>--> 
                </div>
             </div>
          </fieldset>
          <div class="form-re text-center">   
-            <button type="button" class="btn btn-blue2 m-auto w-50">Assign</button>
+            <button type="submit" class="btn btn-blue2 m-auto w-50">Assign</button>
          </div> 
       </form>
    </div>
@@ -316,8 +324,8 @@
                    <th>Assign by</th>
                  </tr>
                </thead>
-               <tbody>
-                 <tr>
+               <tbody id="assignhistorytable">
+                 <!-- <tr>
                    <td>
                      <div class="assign-pe-det d-flex gap-2 align-items-center">
                         <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
@@ -327,51 +335,8 @@
                    <td>15/02/2024</td>
                    <td>N/A</td>
                    <td>Prince</td>
-                 </tr> 
-                 <tr>
-                  <td>
-                    <div class="assign-pe-det d-flex gap-2 align-items-center">
-                       <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
-                       <h4>Shubham Gupta <span>CC-358</span></h4>
-                    </div>
-                  </td>
-                  <td>15/02/2024</td>
-                  <td>N/A</td>
-                  <td>Prince</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="assign-pe-det d-flex gap-2 align-items-center">
-                       <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
-                       <h4>Shubham Gupta <span>CC-358</span></h4>
-                    </div>
-                  </td>
-                  <td>15/02/2024</td>
-                  <td>N/A</td>
-                  <td>Prince</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="assign-pe-det d-flex gap-2 align-items-center">
-                       <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
-                       <h4>Shubham Gupta <span>CC-358</span></h4>
-                    </div>
-                  </td>
-                  <td>15/02/2024</td>
-                  <td>N/A</td>
-                  <td>Prince</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="assign-pe-det d-flex gap-2 align-items-center">
-                       <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
-                       <h4>Shubham Gupta <span>CC-358</span></h4>
-                    </div>
-                  </td>
-                  <td>15/02/2024</td>
-                  <td>N/A</td>
-                  <td>Prince</td>
-                </tr>  
+                 </tr>  -->
+                  
                </tbody>
              </table>
            </div> 

@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Laptop;
 use App\Models\Assign;
+use App\Models\Employee;
+use DB;
 class DeviceController extends Controller
 {
     public function laptop(){
-        return view('laptop');
+        $total=Laptop::count();
+        $used=Assign::distinct('item_id')->count();
+        
+        return view('laptop',compact('total','used'));
     }
 
     public function getlaptop(Request $request){
@@ -43,6 +48,29 @@ class DeviceController extends Controller
         if(!empty($record)){
             foreach($record as $value){
                 $assign=Assign::where('item_id',$value->id)->where('type','1')->first();
+
+                $action="<ul>
+                <li class='apporive-bgcheck'>
+                <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
+                </li>
+                <li class='red-bgmessage' title='Your Message Here'>
+                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-bs-target='#assign_device_popup'>
+                <img src='".basepath('images/table-image/admin.svg')."'>
+                </a>
+                </li>
+                <li>
+                <a data-bs-toggle='modal' class='laptopassignhistory' data-id='".$value->id."' data-type='1' data-bs-target='#assign_device_histroy_popup'>
+                <img src='".basepath('images/table-image/calander-icon.svg')."'>
+                </a>
+                </li>
+                <li>
+                <a class='devicedelete' data-id='".$value->id."'>
+                <img src='".basepath('images/table-image/delete-icon.svg')."'>
+                </a>
+                </li>
+                </ul>";
+
+
                 $result['id']=$value->id;
                 $result['systemid']="L-".$value->systemid."-R1";
                 $result['brand']=$value->brand;
@@ -51,7 +79,7 @@ class DeviceController extends Controller
                 $result['HDD']=$value->hdd;
                 // $result['SSD']="";
                 $result['status']=$value->status;
-                $result['action']="";
+                $result['action']=$action;
 
                 $data[]=$result;
             }
@@ -90,11 +118,12 @@ class DeviceController extends Controller
         $laptop=$laptop->save();
         if($laptop){
             $laptopdata=Laptop::orderBy('id','desc')->first()->id;
+            $assignIT=Employee::where('role','AdminIT')->where('status','1')->first()->id;
             $assign=new Assign;
             $assign->type="1";
             $assign->ram=$request->input('ram');
             $assign->item_id=$laptopdata;
-            $assign->assign='1';
+            $assign->assign=$assignIT; //auto assign it admin
             $assign=$assign->save();
             if($assign){
                 return back()->with('msg',"Laptop Add Successfully");
@@ -104,6 +133,61 @@ class DeviceController extends Controller
             
         }else{
             return back()->with('err_msg',"Some Error in Laptop Add");
+        }
+    }
+
+
+    //laptop assign
+    public function laptopAssign(Request $request){
+        //dd($request->input('empcode'));
+        $empid=Employee::where('empcode',$request->input('empcode'))->first()->id;
+        //dd($empid);
+        $assign=new Assign;
+        $assign->type="1";
+        $assign->item_id=$request->input('deviceid');
+        $assign->assign=$empid;
+        $assign->assign_date=$request->input('assign_date');
+        $assign=$assign->save();
+        if($assign){
+            return back()->with('msg',"Assign Successfully");
+        }else{
+            return back()->with('err_msg',"Not Assign");
+        }
+    }
+
+    //assign history 
+    public function assignhistory(Request $request){
+        $id=$request->input('id');
+        $type=$request->input('type');
+        //$data=Assign::where('type',$type)->where('item_id',$id)->get();
+        $data=DB::table('assign_table');
+        $data->select('employee.name as empname','assign_table.assign_date as assigndate');
+        $data->join('laptop','laptop.id','=','assign_table.item_id');
+        $data->join('employee','employee.id','=','assign_table.assign');
+        $data->where('assign_table.type',$type);
+        $data->where('assign_table.item_id',$id);
+        $data->orderBy('assign_table.aid','desc');
+        $data=$data->get();
+        if($data){
+            return response()->json(["status"=>true,"result"=>$data]);
+        }else{
+            return response()->json(["status"=>false,"message"=>"Some Error"]);
+        }
+
+    }
+
+    //device delete
+    public function devicedelete(Request $request){
+        $id=$request->input('id');
+        dd($id);
+        $data=Laptop::where('id',$id)->update(["deletes"=>1]);
+        if($data){
+            $asigndata=Assign::where('item_id',$id)->delete();
+            if($asigndata){
+                return response()->json(["status"=>true,"Message"=>"Delete Successfully"]);
+            }
+        }else{
+            return response()->json(["status"=>false,"Message"=>"Some Error"]);
         }
     }
 }

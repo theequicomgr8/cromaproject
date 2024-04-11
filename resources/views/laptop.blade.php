@@ -12,9 +12,9 @@
                   </div>
                   <div class="list-det ms-lg-auto">
                      <ul class="d-flex gap-3">
-                        <li><span class="btn btn-white">Total: 20</span></li>
-                        <li><span class="btn btn-white blue-text">used: 13</span></li>
-                        <li><span class="btn btn-white green-text">available: 2</span></li>
+                        <li><span class="btn btn-white">Total: {{$total}}</span></li>
+                        <li><span class="btn btn-white blue-text">used: {{$used}}</span></li>
+                        <li><span class="btn btn-white green-text">available: {{$total-$used}}</span></li>
                         <li><span class="btn btn-white red-text">Not Working: 5</span></li>
                      </ul>
                   </div>
