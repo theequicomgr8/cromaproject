@@ -73,7 +73,7 @@
                      <h4>accessories</h4>
                        <div class="grid-five mt-4">
                           @foreach($accessories as $value)
-                          <a href="accessories-list.html" class="ass-box-list2 bg-grad-black1 d-flex align-items-center gap-3">
+                          <a href="{{$value->blade_name}}" class="ass-box-list2 bg-grad-black1 d-flex align-items-center gap-3">
                              <img src="{{basepath('accessories/'.$value->pic)}}" alt="laptop-icon"> 
                              <h3>{{$value->name}}</h3>
                           </a>

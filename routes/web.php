@@ -18,6 +18,23 @@ Route::get('assignhistory',[DeviceController::class,'assignhistory'])->name('ass
 Route::get('devicedelete',[DeviceController::class,'devicedelete'])->name('device.delete');
 Route::get('getemp',[EmployeeController::class,'getemp'])->name('get.emp');
 
+
+//desktop
+Route::get('desktop-list',[DeviceController::class,'desktop'])->name('desktop.list');
+Route::get('desktop-pagination',[DeviceController::class,'getdesktop'])->name('desktop.get');
+Route::post('desktop-save',[DeviceController::class,'desktopSave'])->name('desktop.save');
+Route::post('desktop-assign',[DeviceController::class,'desktopAssign'])->name('desktop.assign');
+
+
+//ram
+Route::get('ram-list',[AccessoriesController::class,'ram'])->name('ram.list');
+Route::get('ram-pagination',[AccessoriesController::class,'getram'])->name('ram.get');
+Route::post('ram-save',[AccessoriesController::class,'ramSave'])->name('ram.save');
+
+Route::post('ram-assign',[AccessoriesController::class,'ramAssign'])->name('ram.assign');
+Route::get('assignhistory',[AccessoriesController::class,'assignhistory'])->name('assign.history');
+
+Route::get('product-detail/{id?}',[AccessoriesController::class,'productDetail'])->name('product.detail');
 Route::get('/', function () {
     return view('welcome');
 });

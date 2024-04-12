@@ -139,6 +139,77 @@
 </div>
 <!-- Add Device Name model popup end  -->
 
+
+
+<!-- Add desktop Name model popup start  -->
+<div class="modal mymodel add_desktop_name_model fade" id="add_desktop_name_model" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+   <div class="form-content">
+      <h5 class="modal-title">Add Desktop</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   </div>
+   <div class="form-body">
+      <form method="post" action="{{Route('desktop.save')}}">
+        @csrf
+         <fieldset class="form-border rounded-3 p-3 text-start">
+            <legend class="float-none w-auto px-2 m-0">Desktop Details</legend>
+            <div class="d-grid gap-3">
+               <div class="form-re">
+                  <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name Specification Here">
+               </div>
+               <div class="form-re">
+                  <!-- <input type="text" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Ram Specification Here"> -->
+                  <select name="ram" id="" class="my-from-control">
+                    <option value="">Select Ram</option>
+                    @php 
+                    $rams=App\Models\Customram::all();
+                    @endphp
+                    @foreach($rams as $value)
+                    <option value="{{$value->storage}}">{{$value->storage."GB"}}</option>
+                    @endforeach
+                  </select>
+               </div>
+               <div class="form-re">
+                  <input type="text" name="processor" id="mobile_code2" class="my-from-control " placeholder="Enter Processor Specification Here ">
+               </div>
+               <div class="form-re">
+                  <input type="text" name="hdd" class="my-from-control"  placeholder="Enter HDD Specification Here">
+               </div>
+               <div class="form-re">
+                  <input type="text" name="ssd" class="my-from-control"  placeholder="Enter SDD Specification Here">
+               </div>
+               <div class="form-re">
+                  <select class="my-from-control selectcol course" id="" name="status" aria-label="Default select example">
+                     <option value="">Status</option>
+                     @php 
+                     $status=App\Models\Status::all();
+                     @endphp
+                     @foreach($status as $value)
+                     <option value="{{$value->name}}">{{$value->name}}</option>
+                     @endforeach
+                     
+                  </select>
+               </div>
+               
+            </div>
+         </fieldset>
+         <div class="form-re text-center">   
+            <button type="submit" class="btn btn-blue2 m-auto w-50">Add Desktop</button>
+         </div> 
+      </form>
+   </div>
+</div>
+</div>
+</div>
+<!-- Add desktop Name model popup end  -->
+
+
+
+
+
+
+
 <!-- Add Accessories Name model popup start  -->
 <div class="modal mymodel add_accessories_name_model fade" id="add_accessories_name_model" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered">
@@ -148,7 +219,8 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
  </div>
  <div class="form-body">
-    <form>
+    <form method="post" action="{{Route('ram.save')}}" enctype="multipart/form-data">
+      @csrf
          <div class="field-set">
             <fieldset class="form-border rounded-3 p-3 text-start upload-img-box">
                <legend class="float-none w-auto px-2 m-0">Accessories Details</legend>
@@ -156,29 +228,28 @@
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name">
+                                 <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name">
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">
-                                 <input type="text" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Configuration">
+                                 <input type="text" name="configuration" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Configuration">
                            </div>
                         </div>
                      </div>                       
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" id="mobile_code2" class="my-from-control " placeholder="Enter Product Serial No. ">
+                                 <input type="text" name="serial_no" id="mobile_code2" class="my-from-control " placeholder="Enter Product Serial No. ">
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">
-                                 <select class="my-from-control selectcol course" id="" name="course" aria-label="Default select example" style="width: 100%;">
-                                    <option value="null">Select Status</option>
-                                    <option>#1</option>
-                                    <option>#2</option>
-                                    <option>#3</option>
-                                    <option>#4</option>
+                                 <select class="my-from-control selectcol course" name="status" id="" aria-label="Default select example" style="width: 100%;">
+                                    <option value="">Select Status</option>
+                                    <option>New</option>
+                                    <option>Old</option>
+                                    <option>In-Use</option>
                                  </select>
                            </div>
                         </div>
@@ -187,7 +258,7 @@
             </fieldset>
             <div id="custom-button" class="custom-button">
                <div class="upload-image text-center">
-                  <input type="file" id="real-file1" hidden="hidden"  accept="jpeg/png" />
+                  <input type="file" id="real-file1" name="device_pic" hidden="hidden"  accept="jpeg/png" />
                      <img src="{{basepath('images/upload-icon.svg')}}" alt="upload-icon">
                   <span id="custom-text" class="custom-text" title="Upload Device Photo">Upload Device Photo</span>
                </div>                          
@@ -201,27 +272,27 @@
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice No.">
+                                 <input type="text" name="invoice_no" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice No.">
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">   
-                              <input type="date" name="from" value="" class="my-from-control" placeholder="Enter Invoice Date" required="">
+                              <input type="date" name="invoice_date" value="" class="my-from-control" placeholder="Enter Invoice Date" required="">
                            </div>
                         </div>
                      </div>   
                      <div class="form-re">
-                        <input type="text" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice Company Name">
+                        <input type="text" name="invoice_company_name" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice Company Name">
                      </div>  
                      <div class="form-re">   
-                        <input type="date" name="from" value="" class="my-from-control" placeholder="Warranty End Date" required="">
+                        <input type="date" name="warranty_end" value="" class="my-from-control" placeholder="Warranty End Date" required="">
                      </div>             
                    
                </div>                  
             </fieldset>
             <div id="custom-button2" class="custom-button">
                <div class="upload-image text-center">
-                  <input type="file" id="real-file2" hidden="hidden"  accept="jpeg/png" />
+                  <input type="file" name="invoice_file" id="real-file2" hidden="hidden"  accept="jpeg/png" />
                      <img src="{{basepath('images/upload-icon.svg')}}" alt="upload-icon">
                      <span id="custom-text2" class="custom-text" title="Upload Device Photo">Upload Invoice Copy</span>
                   </div>                          
@@ -230,7 +301,7 @@
 
 
        <div class="form-re text-center mt-3">   
-          <button type="button" class="btn btn-blue2 m-auto w-50">Add Accessories</button>
+          <button type="submit" class="btn btn-blue2 m-auto w-50">Add Accessories</button>
        </div> 
     </form>
  </div>
@@ -301,6 +372,75 @@
 </div>
 </div>
 <!-- Assign to (Device) model popup end  -->
+
+
+<!-- desktop assign model start  -->
+
+<div class="modal mymodel assign_device_popup fade" id="assign_device_popup" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+   <div class="form-content">
+      <h5 class="modal-title">Assign to</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   </div>
+   <div class="form-body">
+      <form method="post" action="{{Route('desktop.assign')}}" >
+         @csrf
+         <input type="hidden" name="deviceid">
+         <fieldset class="form-border rounded-3 p-3 text-start">
+            <legend class="float-none w-auto px-2 m-0">Desktop Assign</legend>
+            <div class="d-grid gap-3">
+               <div class="form-re">   
+                  <input type="date" name="assign_date" value="" class="my-from-control"  placeholder="Assign on" required>
+               </div>
+               <div class="form-re">   
+                  <input type="text" name="empcode" required  class="my-from-control searchempname" id="searchempname" onkeyup="getemp(this)"  placeholder="Search by employee name, employee Id 1">
+               </div> 
+               <!-- search list here assign persone name and id  -->
+               <div class="assign-list-date d-grid gap-3 search_emp">
+                  @php 
+                  $employee=App\Models\Employee::where('status','1')->limit(3)->get();
+                  @endphp 
+                  @foreach($employee as $value)
+                  <div class="search-assign-persone d-flex align-items-center justify-content-between">
+                     <div class="assign-pe-det d-flex gap-2 align-items-center">
+                        <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
+                        <h4>{{$value->name}} <span>{{$value->empcode}}</span></h4>
+                     </div>
+                     <input type="radio" name="checked" id="" data-cid="{{$value->empcode}}" data-name="{{$value->name}}" class="click_radio" >
+                  </div>
+                  @endforeach 
+                  <!--
+                  <div class="search-assign-persone d-flex align-items-center justify-content-between">
+                     <div class="assign-pe-det d-flex gap-2 align-items-center">
+                        <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
+                        <h4>Isha Singh <span>CC-318</span></h4>
+                     </div>
+                     <input type="radio" name="checked" id="" data-cid="CC-318" data-name="Isha Singh" class="click_radio">
+                  </div>
+                  <div class="search-assign-persone d-flex align-items-center justify-content-between">
+                     <div class="assign-pe-det d-flex gap-2 align-items-center">
+                        <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
+                        <h4>Pankaj Sharma <span>CC-308</span></h4>
+                     </div>
+                     <input type="radio" name="checked" id="" data-cid="CC-308" data-name="Pankaj Sharma" class="click_radio">
+                  </div>--> 
+               </div>
+            </div>
+         </fieldset>
+         <div class="form-re text-center">   
+            <button type="submit" class="btn btn-blue2 m-auto w-50">Assign</button>
+         </div> 
+      </form>
+   </div>
+</div>
+</div>
+</div>
+
+<!-- desktop assign model end  -->
+
+
+
 
 <!-- Assign History (Device) model popup start  -->
 <div class="modal mymodel assign_device_histroy_popup fade" id="assign_device_histroy_popup" tabindex="-1" aria-hidden="true">

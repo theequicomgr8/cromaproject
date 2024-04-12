@@ -176,6 +176,7 @@ $(document).on("click",".laptopassignhistory",function(){
     data: {id:id,type:type},
     success:function(data){
       console.log(data);
+      $("#assignhistorytable").empty();
       if(data.status==true){
         var ary=data.result;
         var html="";
