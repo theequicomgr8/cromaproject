@@ -55,12 +55,12 @@ class DeviceController extends Controller
                 <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
                 </li>
                 <li class='red-bgmessage' title='Your Message Here'>
-                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-bs-target='#assign_device_popup'>
+                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='1' data-heading='Laptop Assign' data-bs-target='#assign_device_popup'>
                 <img src='".basepath('images/table-image/admin.svg')."'>
                 </a>
                 </li>
                 <li>
-                <a data-bs-toggle='modal' class='laptopassignhistory' data-id='".$value->id."' data-type='1' data-bs-target='#assign_device_histroy_popup'>
+                <a data-bs-toggle='modal' class='laptopassignhistory' data-id='".$value->id."' data-type='1' data-heading='Laptop Assign' data-bs-target='#assign_device_histroy_popup'>
                 <img src='".basepath('images/table-image/calander-icon.svg')."'>
                 </a>
                 </li>
@@ -103,12 +103,15 @@ class DeviceController extends Controller
 
     //laptop save
     public function laptopSave(Request $request){
-        $laptopdata=Laptop::orderBy('id','desc')->first();
+        $laptopdata=Laptop::orderBy('id','desc')->where('system_type','1')->first();
         
-        if(empty($laptopdata->id)){
+        if(empty($laptopdata->systemid)){
             $systemid="01";
         }else{
-            $systemid=$laptopdata+1;
+            $systemid=$laptopdata->systemid+1;
+            if($systemid < 10){
+                $systemid="0".$systemid;
+            }
         }
         $laptop=new Laptop;
         $laptop->brand=$request->input('brand');
@@ -147,7 +150,7 @@ class DeviceController extends Controller
         $empid=Employee::where('empcode',$request->input('empcode'))->first()->id;
         //dd($empid);
         $assign=new Assign;
-        $assign->type="1";
+        $assign->type=$request->input('type') ?? "1";
         $assign->item_id=$request->input('deviceid');
         $assign->assign=$empid;
         $assign->assign_date=$request->input('assign_date');
@@ -193,6 +196,7 @@ class DeviceController extends Controller
     }
 
     public function getdesktop(Request $request){
+        
         $columns=[
             0=>"id",
             1=>"systemid",
@@ -231,12 +235,12 @@ class DeviceController extends Controller
                 <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
                 </li>
                 <li class='red-bgmessage' title='Your Message Here'>
-                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-bs-target='#assign_device_popup'>
+                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='2' data-heading='Desktop Assign' data-bs-target='#assign_device_popup'>
                 <img src='".basepath('images/table-image/admin.svg')."'>
                 </a>
                 </li>
                 <li>
-                <a data-bs-toggle='modal' class='laptopassignhistory' data-id='".$value->id."' data-type='2' data-bs-target='#assign_device_histroy_popup'>
+                <a data-bs-toggle='modal' class='laptopassignhistory' data-id='".$value->id."' data-type='2' data-heading='Desktop Assign' data-bs-target='#assign_device_histroy_popup'>
                 <img src='".basepath('images/table-image/calander-icon.svg')."'>
                 </a>
                 </li>
@@ -281,10 +285,13 @@ class DeviceController extends Controller
     public function desktopSave(Request $request){
         $laptopdata=Laptop::where('system_type','2')->orderBy('id','desc')->first();
         
-        if(empty($laptopdata->id)){
+        if(empty($laptopdata->systemid)){
             $systemid="01";
         }else{
-            $systemid=$laptopdata+1;
+            $systemid=$laptopdata->systemid+1;
+            if($systemid <10){
+                $systemid="0".$systemid;
+            }
         }
         $laptop=new Laptop;
         $laptop->brand=$request->input('brand');

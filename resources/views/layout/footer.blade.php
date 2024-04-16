@@ -310,6 +310,10 @@
 </div>
 <!-- Add Accessories Name model popup end  -->
 
+
+
+
+
 <!-- Assign to (Device) model popup start  -->
 <div class="modal mymodel assign_device_popup fade" id="assign_device_popup" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered">
@@ -322,8 +326,9 @@
       <form method="post" action="{{Route('laptop.assign')}}" >
          @csrf
          <input type="hidden" name="deviceid">
+         <input type="hidden" name="type">
          <fieldset class="form-border rounded-3 p-3 text-start">
-            <legend class="float-none w-auto px-2 m-0">Laptop Assign</legend>
+            <legend class="float-none w-auto px-2 m-0 head">Laptop Assign</legend>
             <div class="d-grid gap-3">
                <div class="form-re">   
                   <input type="date" name="assign_date" value="" class="my-from-control"  placeholder="Assign on" required>
@@ -453,7 +458,7 @@
    <div class="form-body">
       <form>
          <fieldset class="form-border rounded-3 p-3 text-start">
-            <legend class="float-none w-auto px-2 m-0">Laptop Assign</legend>
+            <legend class="float-none w-auto px-2 m-0 devassin">Laptop Assign</legend>
            <div class="tab-content">
             <table class="mytable table-bordered" style="width: 100%;">
                <thead>
@@ -489,6 +494,73 @@
 </div>
 </div>
 <!-- Assign History (Device) model popup end  -->
+
+
+
+<div class="modal mymodel assign_device_popup fade" id="assign_asso_popup" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+   <div class="form-content">
+      <h5 class="modal-title">Assign to</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   </div>
+   <div class="form-body">
+      <form method="post" action="{{Route('ram.assign')}}" >
+         @csrf
+         <input type="hidden" name="deviceid">
+         <fieldset class="form-border rounded-3 p-3 text-start">
+            <legend class="float-none w-auto px-2 m-0">Assessories Assign</legend>
+            <div class="d-grid gap-3">
+               <div class="form-re">   
+                  <input type="date" name="assign_date" value="" class="my-from-control"  placeholder="Assign on" required>
+               </div>
+               <div class="form-re">   
+                  <input type="text" name="empcode" required  class="my-from-control searchempname" id="searchempname" onkeyup="getemp(this)"  placeholder="Search by employee name, employee Id 1">
+               </div> 
+               <!-- search list here assign persone name and id  -->
+               <div class="assign-list-date d-grid gap-3 search_emp">
+                  @php 
+                  $employee=App\Models\Employee::where('status','1')->limit(3)->get();
+                  @endphp 
+                  @foreach($employee as $value)
+                  <div class="search-assign-persone d-flex align-items-center justify-content-between">
+                     <div class="assign-pe-det d-flex gap-2 align-items-center">
+                        <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
+                        <h4>{{$value->name}} <span>{{$value->empcode}}</span></h4>
+                     </div>
+                     <input type="radio" name="checked" id="" data-cid="{{$value->empcode}}" data-name="{{$value->name}}" class="click_radio" >
+                  </div>
+                  @endforeach 
+                  <!--
+                  <div class="search-assign-persone d-flex align-items-center justify-content-between">
+                     <div class="assign-pe-det d-flex gap-2 align-items-center">
+                        <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
+                        <h4>Isha Singh <span>CC-318</span></h4>
+                     </div>
+                     <input type="radio" name="checked" id="" data-cid="CC-318" data-name="Isha Singh" class="click_radio">
+                  </div>
+                  <div class="search-assign-persone d-flex align-items-center justify-content-between">
+                     <div class="assign-pe-det d-flex gap-2 align-items-center">
+                        <img src="{{basepath('images/user-img/user.svg')}}" alt="user">
+                        <h4>Pankaj Sharma <span>CC-308</span></h4>
+                     </div>
+                     <input type="radio" name="checked" id="" data-cid="CC-308" data-name="Pankaj Sharma" class="click_radio">
+                  </div>--> 
+               </div>
+            </div>
+         </fieldset>
+         <div class="form-re text-center">   
+            <button type="submit" class="btn btn-blue2 m-auto w-50">Assign</button>
+         </div> 
+      </form>
+   </div>
+</div>
+</div>
+</div>
+
+
+
+
 
 <!-- Assign to (Accessories) model popup start  -->
 <div class="modal mymodel accessories_device_popup fade" id="accessories_device_popup" tabindex="-1" aria-hidden="true">

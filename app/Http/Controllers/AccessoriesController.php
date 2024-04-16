@@ -9,7 +9,7 @@ use File;
 use App\Models\Laptop;
 use App\Models\Assign;
 use App\Models\Employee;
-use App\Models\Ram;
+use App\Models\Asset;
 use DB;
 
 class AccessoriesController extends Controller
@@ -62,7 +62,7 @@ class AccessoriesController extends Controller
         ];
 
 
-        $recordsTotal=Ram::where('accessories_type','1')->count();
+        $recordsTotal=Asset::where('accessories_type','1')->count();
         $recordsFiltered=$recordsTotal;
         $limit=$request->input('length');
         $start=$request->input('start');
@@ -72,7 +72,7 @@ class AccessoriesController extends Controller
         if(!empty($request->input('search.value'))){
 
         }else{
-            $record=Ram::where('deletes','0')
+            $record=Asset::where('deletes','0')
                     ->where('accessories_type','1')
                     ->limit($limit)
                     ->get();    
@@ -87,12 +87,12 @@ class AccessoriesController extends Controller
                 <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
                 </li>
                 <li class='red-bgmessage' title='Your Message Here'>
-                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-bs-target='#assign_device_popup'>
+                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='3' data-heading='Ram Assign' data-bs-target='#assign_device_popup'>
                 <img src='".basepath('images/table-image/admin.svg')."'>
                 </a>
-                </li>
+                </li> 
                 <li>
-                <a data-bs-toggle='modal' class='laptopassignhistory' data-id='".$value->id."' data-type='3' data-bs-target='#assign_device_histroy_popup'>
+                <a data-bs-toggle='modal' class='asso-assignhistory' data-id='".$value->id."' data-type='3' data-bs-target='#assign_device_histroy_popup'>
                 <img src='".basepath('images/table-image/calander-icon.svg')."'>
                 </a>
                 </li>
@@ -105,7 +105,7 @@ class AccessoriesController extends Controller
 
 
 
-                $result['id']=$value->id;
+                $result['id']=$value->systemid;
                 $result['brand']=$value->brand;
                 $result['configuration']=$value->configuration;
                 $result['serial_no']="<a href='/product-detail/$value->id'>".$value->serial_no."</a>";
@@ -135,12 +135,15 @@ class AccessoriesController extends Controller
 
     //ram save
     public function ramSave(Request $request){
-        $ramdata=Ram::where('accessories_type','1')->orderBy('id','desc')->first();
+        $ramdata=Asset::where('accessories_type','1')->orderBy('id','desc')->first();
         
-        if(empty($ramdata->id)){
+        if(empty($ramdata->$systemid)){
             $systemid="01";
         }else{
-            $systemid=$ramdata+1;
+            $systemid=$ramdata->$systemid+1;
+            if($systemid <10){
+                $systemid="0".$systemid;
+            }
         }
         //file device_pic,invoice_file
         if($file=$request->has('device_pic')){
@@ -155,7 +158,7 @@ class AccessoriesController extends Controller
             $file1->move(public_path('/ram'),$invoice_file);
         }
 
-        $ram=new Ram;
+        $ram=new Asset;
         $ram->storage=$request->input('storage');
         $ram->systemid=$systemid;
         $ram->brand=$request->input('brand');
@@ -177,7 +180,7 @@ class AccessoriesController extends Controller
         //$ram->system_type='1';
         $ram=$ram->save();
         if($ram){
-            $ram_data=Ram::orderBy('id','desc')->first()->id;
+            $ram_data=Asset::orderBy('id','desc')->first()->id;
             $assignIT=Employee::where('role','AdminIT')->where('status','1')->first()->id;
             $assign=new Assign;
             $assign->type="3";
@@ -223,7 +226,7 @@ class AccessoriesController extends Controller
         //$data=Assign::where('type',$type)->where('item_id',$id)->get();
         $data=DB::table('assign_table');
         $data->select('employee.name as empname','assign_table.assign_date as assigndate');
-        $data->join('laptop','laptop.id','=','assign_table.item_id');
+        $data->join('ram','ram.id','=','assign_table.item_id');
         $data->join('employee','employee.id','=','assign_table.assign');
         $data->where('assign_table.type',$type);
         $data->where('assign_table.item_id',$id);
@@ -241,7 +244,7 @@ class AccessoriesController extends Controller
 
 
     public function productDetail($id){
-        //$data=Ram::where('id',$id)->first();
+        //$data=Asset::where('id',$id)->first();
         $data=DB::table('ram');
         $data->select('ram.*','employee.name as empname');
         $data->join('assign_table','assign_table.item_id','=','ram.id');

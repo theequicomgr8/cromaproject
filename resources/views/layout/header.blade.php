@@ -4,7 +4,7 @@
             <div class="row d-flex align-items-center">
                <div class="col-lg-8 col-6">
                   <ul class="nav nav-pills logo-here align-items-center" id="pills-tab" role="tablist">
-                     <a href="DashboardUser.html"><img src="{{basepath('images/logocroma.svg')}}" alt="logocroma" class="img-fluid"></a>
+                     <a href="/asset-dashboard"><img src="{{basepath('images/logocroma.svg')}}" alt="logocroma" class="img-fluid"></a>
                   </ul>
                </div>
                <div class="col-lg-4 col-6">

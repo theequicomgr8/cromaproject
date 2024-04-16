@@ -162,7 +162,11 @@ function getemp(input){
 //when you click on assign icon then laptop id pass in hidden field
 $(document).on("click",".assignclick",function(){
   var id=$(this).attr('data-id');
+  var type=$(this).attr('data-type');
+  var heading=$(this).attr('data-heading');
   $("input[name='deviceid']").attr('value',id);
+  $("input[name='type']").attr('value',type);
+  $(".head").html(heading);
 });
 
 
@@ -170,8 +174,47 @@ $(document).on("click",".assignclick",function(){
 $(document).on("click",".laptopassignhistory",function(){
   var id=$(this).attr('data-id');
   var type=$(this).attr('data-type');
+
+  var heading=$(this).attr('data-heading');
+  $(".devassin").html(heading);
+  
   $.ajax({
     url : '/assignhistory',
+    type: 'GET',
+    data: {id:id,type:type},
+    success:function(data){
+      console.log(data);
+      $("#assignhistorytable").empty();
+      if(data.status==true){
+        var ary=data.result;
+        var html="";
+        for(var i=0;i<ary.length;i++){
+          html+="<tr>";
+          html+="<td>";
+          html+='<img src="http://127.0.0.1:8000/asset/images/user-img/user.svg" alt="user">';
+          html+=ary[i]['empname'];
+          html+="</td>";
+          html+="<td>"+ary[i]['assigndate']+"</td>";
+          html+="<td>NA</td>";
+          html+="<td>NA</td>";
+          html+="</tr>";
+        }
+        $("#assignhistorytable").append(html);
+      }
+    }
+  });
+});
+
+
+
+
+$(document).on("click",".asso-assignhistory",function(){
+  var id=$(this).attr('data-id');
+  var type=$(this).attr('data-type');
+  var heading=$(this).attr('data-heading');
+  $(".devassin").html(heading);
+  $.ajax({
+    url : '/asso-assignhistory',
     type: 'GET',
     data: {id:id,type:type},
     success:function(data){
