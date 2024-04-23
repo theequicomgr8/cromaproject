@@ -18,7 +18,7 @@
                  <div class="img-upload d-flex align-items-center">
                    <div class="custom-button">
                         <div class="img-uploadheading text-center" id="custom-button3">
-                           <input type="file" name="pic" required id="real-file3" hidden="hidden" accept="jpeg/png">
+                           <input type="file" name="pic" required id="real-file3" hidden="hidden" accept="jpeg/png" required>
                               <img src="{{basepath('images/upload-icon.svg')}}" alt="upload-icon">
                               <span class="custom-text">Upload Icon</span>
                         </div>                       
@@ -91,7 +91,7 @@
             <legend class="float-none w-auto px-2 m-0">Laptop Details</legend>
             <div class="d-grid gap-3">
                <div class="form-re">
-                  <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name Specification Here">
+                  <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name Specification Here" required>
                </div>
                <div class="form-re">
                   <!-- <input type="text" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Ram Specification Here"> -->
@@ -106,16 +106,16 @@
                   </select>
                </div>
                <div class="form-re">
-                  <input type="text" name="processor" id="mobile_code2" class="my-from-control " placeholder="Enter Processor Specification Here ">
+                  <input type="text" name="processor" id="mobile_code2" class="my-from-control " placeholder="Enter Processor Specification Here " required>
                </div>
                <div class="form-re">
-                  <input type="text" name="hdd" class="my-from-control"  placeholder="Enter HDD Specification Here">
+                  <input type="text" name="hdd" class="my-from-control"  placeholder="Enter HDD Specification Here" required>
                </div>
                <div class="form-re">
-                  <input type="text" name="ssd" class="my-from-control"  placeholder="Enter SDD Specification Here">
+                  <input type="text" name="ssd" class="my-from-control"  placeholder="Enter SDD Specification Here" required>
                </div>
                <div class="form-re">
-                  <select class="my-from-control selectcol course" id="" name="status" aria-label="Default select example">
+                  <select class="my-from-control selectcol course" id="" name="status" aria-label="Default select example" required>
                      <option value="">Status</option>
                      @php 
                      $status=App\Models\Status::all();
@@ -141,6 +141,70 @@
 
 
 
+<!--  Edit Laptop modal start -->
+<div class="modal mymodel add_device_name_model fade" id="edit_device_name_model" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+   <div class="form-content">
+      <h5 class="modal-title">Edit Laptop</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   </div>
+   <div class="form-body">
+      <form method="post" action="{{Route('device.update')}}">
+        @csrf
+        <input type="hidden" name="id" id="deviceid">
+         <fieldset class="form-border rounded-3 p-3 text-start">
+            <legend class="float-none w-auto px-2 m-0">Laptop Details</legend>
+            <div class="d-grid gap-3">
+               <div class="form-re">
+                  <input type="text" name="brand" required class="my-from-control" id="devicebrand" value="" placeholder="Enter Brand Name Specification Here">
+               </div>
+               <div class="form-re">
+                  <!-- <input type="text" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Ram Specification Here"> -->
+                  <select name="ram" id="deviceram" required class="my-from-control">
+                    <option value="">Select Ram</option>
+                    @php 
+                    $rams=App\Models\Customram::all();
+                    @endphp
+                    @foreach($rams as $value)
+                    <option value="{{$value->storage}}">{{$value->storage."GB"}}</option>
+                    @endforeach
+                  </select>
+               </div>
+               <div class="form-re">
+                  <input type="text" name="processor" required id="deviceprocessor" class="my-from-control " placeholder="Enter Processor Specification Here ">
+               </div>
+               <div class="form-re">
+                  <input type="text" name="hdd" required id="devicehdd" class="my-from-control"  placeholder="Enter HDD Specification Here">
+               </div>
+               <div class="form-re">
+                  <input type="text" name="ssd" required id="devicessd" class="my-from-control"  placeholder="Enter SDD Specification Here">
+               </div>
+               <div class="form-re">
+                  <select class="my-from-control selectcol course" required id="devicestatus" name="status" aria-label="Default select example">
+                     <option value="">Status</option>
+                     @php 
+                     $status=App\Models\Status::all();
+                     @endphp
+                     @foreach($status as $value)
+                     <option value="{{$value->name}}">{{$value->name}}</option>
+                     @endforeach
+                     
+                  </select>
+               </div>
+               
+            </div>
+         </fieldset>
+         <div class="form-re text-center">   
+            <button type="submit" class="btn btn-blue2 m-auto w-50">Update Laptop</button>
+         </div> 
+      </form>
+   </div>
+</div>
+</div>
+</div>
+<!-- Edit Laptop modal end -->
+
 <!-- Add desktop Name model popup start  -->
 <div class="modal mymodel add_desktop_name_model fade" id="add_desktop_name_model" tabindex="-1" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered">
@@ -156,11 +220,11 @@
             <legend class="float-none w-auto px-2 m-0">Desktop Details</legend>
             <div class="d-grid gap-3">
                <div class="form-re">
-                  <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name Specification Here">
+                  <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name Specification Here" required>
                </div>
                <div class="form-re">
                   <!-- <input type="text" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Ram Specification Here"> -->
-                  <select name="ram" id="" class="my-from-control">
+                  <select name="ram" id="" class="my-from-control" required>
                     <option value="">Select Ram</option>
                     @php 
                     $rams=App\Models\Customram::all();
@@ -171,16 +235,16 @@
                   </select>
                </div>
                <div class="form-re">
-                  <input type="text" name="processor" id="mobile_code2" class="my-from-control " placeholder="Enter Processor Specification Here ">
+                  <input type="text" name="processor" id="mobile_code2" class="my-from-control " placeholder="Enter Processor Specification Here " required>
                </div>
                <div class="form-re">
-                  <input type="text" name="hdd" class="my-from-control"  placeholder="Enter HDD Specification Here">
+                  <input type="text" name="hdd" class="my-from-control"  placeholder="Enter HDD Specification Here" required>
                </div>
                <div class="form-re">
-                  <input type="text" name="ssd" class="my-from-control"  placeholder="Enter SDD Specification Here">
+                  <input type="text" name="ssd" class="my-from-control"  placeholder="Enter SDD Specification Here" required>
                </div>
                <div class="form-re">
-                  <select class="my-from-control selectcol course" id="" name="status" aria-label="Default select example">
+                  <select class="my-from-control selectcol course" id="" name="status" aria-label="Default select example" required>
                      <option value="">Status</option>
                      @php 
                      $status=App\Models\Status::all();
@@ -228,28 +292,31 @@
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name">
+                                 <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name" required>
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">
-                                 <input type="text" name="configuration" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Configuration">
+                                 <input type="text" name="configuration" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Configuration" required>
                            </div>
                         </div>
                      </div>                       
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" name="serial_no" id="mobile_code2" class="my-from-control " placeholder="Enter Product Serial No. ">
+                                 <input type="text" name="serial_no" id="mobile_code2" class="my-from-control " placeholder="Enter Product Serial No. " required>
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">
-                                 <select class="my-from-control selectcol course" name="status" id="" aria-label="Default select example" style="width: 100%;">
+                                 <select class="my-from-control selectcol course" name="status" id="" aria-label="Default select example" style="width: 100%;" required>
                                     <option value="">Select Status</option>
-                                    <option>New</option>
-                                    <option>Old</option>
-                                    <option>In-Use</option>
+                                    @php 
+                                    $status=App\Models\Status::all();
+                                    @endphp
+                                    @foreach($status as $value)
+                                    <option value="{{$value->name}}">{{$value->name}}</option>
+                                    @endforeach
                                  </select>
                            </div>
                         </div>
@@ -272,7 +339,7 @@
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" name="invoice_no" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice No.">
+                                 <input type="text" name="invoice_no" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice No." required>
                            </div>
                         </div>
                         <div class="col-lg-6">
@@ -282,7 +349,7 @@
                         </div>
                      </div>   
                      <div class="form-re">
-                        <input type="text" name="invoice_company_name" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice Company Name">
+                        <input type="text" name="invoice_company_name" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice Company Name" required>
                      </div>  
                      <div class="form-re">   
                         <input type="date" name="warranty_end" value="" class="my-from-control" placeholder="Warranty End Date" required="">
@@ -310,6 +377,110 @@
 </div>
 <!-- Add Accessories Name model popup end  -->
 
+
+<!--  Edit Accessories modal start -->
+<div class="modal mymodel add_accessories_name_model fade" id="edit_accessories_name_model" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+ <div class="form-content">
+    <h5 class="modal-title">Update Accessories</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+ </div>
+ <div class="form-body">
+    <form method="post" action="{{Route('accessories.update')}}" enctype="multipart/form-data">
+      @csrf
+         <input type="hidden" name="id" id="accessoriesid">
+         <div class="field-set">
+            <fieldset class="form-border rounded-3 p-3 text-start upload-img-box">
+               <legend class="float-none w-auto px-2 m-0">Accessories Details</legend>
+               <div class="d-grid gap-3">                      
+                     <div class="row">
+                        <div class="col-lg-6 pe-0">
+                           <div class="form-re">
+                                 <input type="text" name="brand" class="my-from-control" id="accessoriesbrand" value="" placeholder="Enter Brand Name">
+                           </div>
+                        </div>
+                        <div class="col-lg-6">
+                           <div class="form-re">
+                                 <input type="text" name="configuration" id="accessoriesconfiguration" class="my-from-control" value="" placeholder="Enter Configuration" required>
+                           </div>
+                        </div>
+                     </div>                       
+                     <div class="row">
+                        <div class="col-lg-6 pe-0">
+                           <div class="form-re">
+                                 <input type="text" name="serial_no" id="accessoriesserial_no" class="my-from-control " placeholder="Enter Product Serial No. " required>
+                           </div>
+                        </div>
+                        <div class="col-lg-6">
+                           <div class="form-re">
+                                 <select class="my-from-control selectcol course" name="status" id="accessoriesstatus" aria-label="Default select example" style="width: 100%;" required>
+                                    <option value="">Select Status</option>
+                                    @php 
+                                    $status=App\Models\Status::all();
+                                    @endphp
+                                    @foreach($status as $value)
+                                    <option value="{{$value->name}}">{{$value->name}}</option>
+                                    @endforeach
+                                 </select>
+                           </div>
+                        </div>
+                     </div>
+               </div>                  
+            </fieldset>
+            <div id="custom-button" class="custom-button">
+               <div class="upload-image text-center">
+                  <input type="file" id="real-file1" name="device_pic" hidden="hidden"  accept="jpeg/png" />
+                     <img src="{{basepath('images/upload-icon.svg')}}" alt="upload-icon">
+                  <span id="custom-text" class="custom-text" title="Upload Device Photo">Upload Device Photo</span>
+               </div>                          
+            </div>
+         </div>
+
+         <div class="field-set mt-2">
+            <fieldset class="form-border rounded-3 p-3 text-start upload-img-box">
+               <legend class="float-none w-auto px-2 m-0">Invoice Details</legend>
+               <div class="d-grid gap-3">                      
+                     <div class="row">
+                        <div class="col-lg-6 pe-0">
+                           <div class="form-re">
+                                 <input type="text" name="invoice_no" class="my-from-control" id="accessoriesinvoice_no" value="" placeholder="Enter Invoice No." required>
+                           </div>
+                        </div>
+                        <div class="col-lg-6">
+                           <div class="form-re">   
+                              <input type="date" name="invoice_date" id="accessoriesinvoice_date" class="my-from-control" placeholder="Enter Invoice Date" required="">
+                           </div>
+                        </div>
+                     </div>   
+                     <div class="form-re">
+                        <input type="text" name="invoice_company_name" class="my-from-control" id="accessoriesinvoice_company_name" value="" placeholder="Enter Invoice Company Name" required>
+                     </div>  
+                     <div class="form-re">   
+                        <input type="date" name="warranty_end" id="accessorieswarranty_end" class="my-from-control" placeholder="Warranty End Date" required="">
+                     </div>             
+                   
+               </div>                  
+            </fieldset>
+            <div id="custom-button2" class="custom-button">
+               <div class="upload-image text-center">
+                  <input type="file" name="invoice_file" id="real-file2" hidden="hidden"  accept="jpeg/png" />
+                     <img src="{{basepath('images/upload-icon.svg')}}" alt="upload-icon">
+                     <span id="custom-text2" class="custom-text" title="Upload Device Photo">Upload Invoice Copy</span>
+                  </div>                          
+            </div>
+         </div>             
+
+
+       <div class="form-re text-center mt-3">   
+          <button type="submit" class="btn btn-blue2 m-auto w-50">Update Accessories</button>
+       </div> 
+    </form>
+ </div>
+</div>
+</div>
+</div>
+<!-- Edit Accessories modal end  -->
 
 
 

@@ -15,7 +15,7 @@ function authid($id){
 }
 
 function basepath($file){
-	return "http://localhost/project/public/asset/".$file;
+	return "https://employment.cromacampus.com/public/asset/".$file;
 	//return "https://course.cromacampus.com/public/".$file;
 }
 

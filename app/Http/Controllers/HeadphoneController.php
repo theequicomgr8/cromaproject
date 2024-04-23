@@ -21,8 +21,10 @@ class HeadphoneController extends Controller
 
     //headphone start
     public function headphone(){
-        $total=Laptop::where('system_type','1')->count();
-        $used=Assign::distinct('item_id')->count();
+        //$total=Laptop::where('system_type','1')->count();
+        //$used=Assign::distinct('item_id')->count();
+        $total=Asset::where('accessories_type','7')->count();
+        $used=Assign::distinct('item_id')->where('type',9)->where('assign','!=','2')->count();
         
         return view('headphone',compact('total','used'));
     }
@@ -48,7 +50,14 @@ class HeadphoneController extends Controller
         $dir=$request->input('order.0.dir');
 
         if(!empty($request->input('search.value'))){
-
+            $record =  Asset::where('id','LIKE',"%{$search}%")
+                        ->orWhere('brand', 'LIKE',"%{$search}%")
+                        ->where('accessories_type','7')
+                        ->where('deletes','0')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order,$dir)
+                        ->get();
         }else{
             $record=Asset::where('deletes','0')
                     ->where('accessories_type','7')
@@ -62,15 +71,15 @@ class HeadphoneController extends Controller
                 $assignname=Employee::where('id',$assign)->first()->name;
                 $action="<ul>
                 <li class='apporive-bgcheck'>
-                <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
+                <a class='accessoriesedit' data-id='".$value->id."' data-brand='".$value->brand."' data-configuration='".$value->configuration."' data-serial_no='".$value->serial_no."' data-status='".$value->status."' data-warranty_end='".$value->warranty_end."' data-invoice_no='".$value->invoice_no."' data-invoice_date='".$value->invoice_date."' data-invoice_company_name='".$value->invoice_company_name."'><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
                 </li>
                 <li class='red-bgmessage' title='Your Message Here'>
-                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='9' data-heading='headphone Assign' data-bs-target='#assign_device_popup'>
+                <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='9' data-heading='Headphone Assign' data-bs-target='#assign_device_popup'>
                 <img src='".basepath('images/table-image/admin.svg')."'>
                 </a>
                 </li>
                 <li>
-                <a data-bs-toggle='modal' class='asso-assignhistory' data-id='".$value->id."' data-type='9' data-heading='headphone Assign' data-bs-target='#assign_device_histroy_popup'>
+                <a data-bs-toggle='modal' class='asso-assignhistory' data-id='".$value->id."' data-type='9' data-heading='Headphone Assign' data-bs-target='#assign_device_histroy_popup'>
                 <img src='".basepath('images/table-image/calander-icon.svg')."'>
                 </a>
                 </li>
@@ -85,8 +94,8 @@ class HeadphoneController extends Controller
 
                 $result['id']=$value->systemid;
                 $result['brand']=$value->brand;
-                $result['configuration']=$value->configuration;
-                $result['serial_no']="<a href='/product-detail/$value->id'>".$value->serial_no."</a>";
+                $result['configuration']=$value->configuration; //url/id/accessories_type/type
+                $result['serial_no']="<a href='/product-detail/$value->id/7/9'>".$value->serial_no."</a>";
                 $result['status']=$value->status;
                 $result['assign']=$assignname;//$value->assign;
                 // $result['SSD']="";
@@ -165,7 +174,8 @@ class HeadphoneController extends Controller
             $assign->type="9";
             //$assign->headphone=$request->input('headphone');
             $assign->item_id=$headphone_data;
-            $assign->assign=$assignIT; //auto assign it admin
+            $assign->assign=Session::get('Auth_id');//$assignIT; //auto assign it admin
+            $assign->assign_by=Session::get('Auth_name');
             $assign->assign_date=date('y-m-d');
             $assign=$assign->save();
             if($assign){
@@ -189,6 +199,7 @@ class HeadphoneController extends Controller
         $assign->type="9";
         $assign->item_id=$request->input('deviceid');
         $assign->assign=$empid;
+        $assign->assign_by=Session::get('Auth_name');
         $assign->assign_date=$request->input('assign_date');
         $assign=$assign->save();
         if($assign){

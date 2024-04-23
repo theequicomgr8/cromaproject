@@ -1,0 +1,70 @@
+    <table border="1" cellspacing="10" cellpadding="2">
+    <thead>
+      <tr>
+        <th>Transaction Type (N – NFET, R – RTGS)</th>
+        <th>Beneficiary Code * (Inter – HDFC to HDFC)</th>
+        <th>Beneficiary Account Number</th>
+        <th>Instrument Amount</th>
+        <th>Beneficiary Name (Upto 40 character without any special character)</th>         
+        <th>Drawee Location</th>         
+        <th>Print Location</th>         
+        <th>Bene Address 1</th>         
+        <th>Bene Address 2</th>         
+        <th>Bene Address 3</th>         
+        <th>Bene Address 4</th>         
+        <th>Bene Address 5</th>         
+        <th>Instruction Reference Number</th>         
+        <th>Customer Reference Number(Any alpha numeric character upto 20)</th>         
+        <th>Payment details 1</th>         
+        <th>Payment details 2</th>         
+        <th>Payment details 3</th>         
+        <th>Payment details 4</th>         
+        <th>Payment details 5</th>         
+        <th>Payment details 6</th>         
+        <th>Payment details 7</th>         
+        <th>Cheque Number</th>         
+        <th>Chq / Trn Date (DD/MM/YYYY)</th>         
+        <th>MICR Number</th>         
+        <th>IFSC Code</th>         
+        <th>Beneficiary Bank Name</th>         
+        <th>Beneficiary Bank Branch Name</th>         
+        <th>Beneficiary email id</th>         
+      </tr>
+    </thead>
+    <tbody>
+                <tr>
+              <td align="center">N</td>              
+              <td align="center"></td>
+              <td align="center"></td>
+              <td align="center">'10000</td>
+              <td align="center"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>               
+              <td>
+                Croma Campus P.Ship              </td>
+			  <td></td>               
+			  <td></td>               
+			  <td></td>               
+			  <td></td>               
+			  <td></td>               
+			  <td></td>               
+			  <td></td>               
+			  <td></td>                
+			  <td>'17/04/2024</td>                
+			  <td></td>                
+			  <td align="center"></td>          
+			  <td></td>          
+			  <td>Delhi</td>          
+			  <td align="center">Croma Facebook</td>         
+			 
+            
+            </tr>
+                            
+    </tbody>
+    </table>

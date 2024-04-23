@@ -7,11 +7,12 @@ use App\Models\Laptop;
 use App\Models\Assign;
 use App\Models\Employee;
 use DB;
+use Session;
 class DeviceController extends Controller
 {
     public function laptop(){
         $total=Laptop::where('system_type','1')->count();
-        $used=Assign::distinct('item_id')->count();
+        $used=Assign::distinct('item_id')->where('type',1)->where('assign','!=','2')->count();
         
         return view('laptop',compact('total','used'));
     }
@@ -38,7 +39,17 @@ class DeviceController extends Controller
         $dir=$request->input('order.0.dir');
 
         if(!empty($request->input('search.value'))){
-
+            $search=$request->input('search.value');
+            $record =  laptop::where('id','LIKE',"%{$search}%")
+                        ->orWhere('brand', 'LIKE',"%{$search}%")
+                        ->orWhere('processor', 'LIKE',"%{$search}%")
+                        ->orWhere('ram', 'LIKE',"%{$search}%")
+                        ->where('system_type','1')
+                        ->where('deletes','0')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order,$dir)
+                        ->get();  
         }else{
             $record=laptop::where('deletes','0')
                     ->where('system_type','1')
@@ -47,12 +58,12 @@ class DeviceController extends Controller
         }
         $data=[];
         if(!empty($record)){
-            foreach($record as $value){
+            foreach($record as $key => $value){
                 $assign=Assign::where('item_id',$value->id)->where('type','1')->first();
 
                 $action="<ul>
                 <li class='apporive-bgcheck'>
-                <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
+                <a class='deviceedit' data-id='".$value->id."' data-brand='".$value->brand."' data-processor='".$value->processor."' data-ram='".$value->ram."' data-hdd='".$value->hdd."' data-ssd='".$value->ssd."' data-status='".$value->status."'  data-bs-target='#edit_device_name_model'><img src='".basepath('images/table-image/edit-icon.svg')."' ></a>
                 </li>
                 <li class='red-bgmessage' title='Your Message Here'>
                 <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='1' data-heading='Laptop Assign' data-bs-target='#assign_device_popup'>
@@ -73,10 +84,10 @@ class DeviceController extends Controller
 
 
 
-                $result['id']=$value->id;
-                $result['systemid']="L-".$value->systemid."-R1";
+                $result['id']=$key+1;//$value->id;
+                $result['systemid']="<a href='/device-product-detail/$value->id/1/1'>"."L-".$value->systemid."-R1"."</a>"; //"L-".$value->systemid."-R1"; //url/id/accessories_type/type
                 $result['brand']=$value->brand;
-                $result['ram']=$assign->ram;
+                $result['ram']=$value->ram;//$assign->ram;
                 $result['processor']=$value->processor;
                 $result['HDD']=$value->hdd;
                 // $result['SSD']="";
@@ -101,7 +112,7 @@ class DeviceController extends Controller
 
 
 
-    //laptop save
+    //laptop save 
     public function laptopSave(Request $request){
         $laptopdata=Laptop::orderBy('id','desc')->where('system_type','1')->first();
         
@@ -120,6 +131,7 @@ class DeviceController extends Controller
         $laptop->ssd=$request->input('ssd');
         $laptop->processor=$request->input('processor');
         $laptop->status=$request->input('status');
+        $laptop->ram=$request->input('ram');
         $laptop->system_type='1';
         $laptop=$laptop->save();
         if($laptop){
@@ -127,9 +139,10 @@ class DeviceController extends Controller
             $assignIT=Employee::where('role','AdminIT')->where('status','1')->first()->id;
             $assign=new Assign;
             $assign->type="1";
-            $assign->ram=$request->input('ram');
+            //$assign->ram=$request->input('ram');
             $assign->item_id=$laptopdata;
-            $assign->assign=$assignIT; //auto assign it admin
+            $assign->assign=Session::get('Auth_id');//$assignIT; //auto assign it admin
+            $assign->assign_by=Session::get('Auth_name');
             $assign->assign_date=date('y-m-d');
             $assign=$assign->save();
             if($assign){
@@ -153,6 +166,7 @@ class DeviceController extends Controller
         $assign->type=$request->input('type') ?? "1";
         $assign->item_id=$request->input('deviceid');
         $assign->assign=$empid;
+        $assign->assign_by=Session::get('Auth_name');
         $assign->assign_date=$request->input('assign_date');
         $assign=$assign->save();
         if($assign){
@@ -168,9 +182,10 @@ class DeviceController extends Controller
         $type=$request->input('type');
         //$data=Assign::where('type',$type)->where('item_id',$id)->get();
         $data=DB::table('assign_table');
-        $data->select('employee.name as empname','assign_table.assign_date as assigndate');
+        $data->select('employee.name as empname','assign_table.assign_date as assigndate','assign_table.assign_by as assign_by');
         $data->join('laptop','laptop.id','=','assign_table.item_id');
         $data->join('employee','employee.id','=','assign_table.assign');
+        //$data->join('employee as e','e.id','=','assign_table.assign_by');
         $data->where('assign_table.type',$type);
         $data->where('assign_table.item_id',$id);
         $data->orderBy('assign_table.aid','desc');
@@ -190,7 +205,8 @@ class DeviceController extends Controller
     //desktop start
     public function desktop(){
         $total=Laptop::where('system_type','2')->count();
-        $used=Assign::distinct('item_id')->where('type','2')->count();
+        //$used=Assign::distinct('item_id')->where('type','2')->count();
+        $used=Assign::distinct('item_id')->where('type',2)->where('assign','!=','2')->count();
         
         return view('desktop',compact('total','used'));
     }
@@ -218,7 +234,17 @@ class DeviceController extends Controller
         $dir=$request->input('order.0.dir');
 
         if(!empty($request->input('search.value'))){
-
+            $search=$request->input('search.value');
+            $record =  laptop::where('id','LIKE',"%{$search}%")
+                        ->orWhere('brand', 'LIKE',"%{$search}%")
+                        ->orWhere('processor', 'LIKE',"%{$search}%")
+                        ->orWhere('ram', 'LIKE',"%{$search}%")
+                        ->where('system_type','2')
+                        ->where('deletes','0')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order,$dir)
+                        ->get();
         }else{
             $record=laptop::where('deletes','0')
                     ->where('system_type','2')
@@ -227,12 +253,12 @@ class DeviceController extends Controller
         }
         $data=[];
         if(!empty($record)){
-            foreach($record as $value){
+            foreach($record as $key => $value){
                 $assign=Assign::where('item_id',$value->id)->where('type','2')->first();
 
                 $action="<ul>
                 <li class='apporive-bgcheck'>
-                <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
+                <a class='deviceedit' data-id='".$value->id."' data-brand='".$value->brand."' data-processor='".$value->processor."' data-ram='".$value->ram."' data-hdd='".$value->hdd."' data-ssd='".$value->ssd."' data-status='".$value->status."'  data-bs-target='#edit_device_name_model' ><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
                 </li>
                 <li class='red-bgmessage' title='Your Message Here'>
                 <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='2' data-heading='Desktop Assign' data-bs-target='#assign_device_popup'>
@@ -253,10 +279,10 @@ class DeviceController extends Controller
 
 
 
-                $result['id']=$value->id;
-                $result['systemid']="L-".$value->systemid."-R1";
+                $result['id']=$key+1;
+                $result['systemid']="<a href='/device-product-detail/$value->id/2/2'>"."L-".$value->systemid."-R1"."</a>"; //"L-".$value->systemid."-R1"; //url/id/accessories_type/type
                 $result['brand']=$value->brand;
-                $result['ram']=$assign->ram;
+                $result['ram']=$value->ram;//$assign->ram;
                 $result['processor']=$value->processor;
                 $result['HDD']=$value->hdd;
                 // $result['SSD']="";
@@ -300,6 +326,7 @@ class DeviceController extends Controller
         $laptop->ssd=$request->input('ssd');
         $laptop->processor=$request->input('processor');
         $laptop->status=$request->input('status');
+        $laptop->ram=$request->input('ram');
         $laptop->system_type='2';
         $laptop=$laptop->save();
         if($laptop){
@@ -307,9 +334,9 @@ class DeviceController extends Controller
             $assignIT=Employee::where('role','AdminIT')->where('status','1')->first()->id;
             $assign=new Assign;
             $assign->type="2";
-            $assign->ram=$request->input('ram');
+            //$assign->ram=$request->input('ram');
             $assign->item_id=$laptopdata;
-            $assign->assign=$assignIT; //auto assign it admin
+            $assign->assign=Session::get('Auth_id');//$assignIT; //auto assign it admin
             $assign->assign_date=date('y-m-d');
             $assign=$assign->save();
             if($assign){
@@ -333,6 +360,7 @@ class DeviceController extends Controller
         $assign->type="2";
         $assign->item_id=$request->input('deviceid');
         $assign->assign=$empid;
+        $assign->assign_by=Session::get('Auth_name');
         $assign->assign_date=$request->input('assign_date');
         $assign=$assign->save();
         if($assign){
@@ -382,6 +410,57 @@ class DeviceController extends Controller
             }
         }else{
             return response()->json(["status"=>false,"Message"=>"Some Error"]);
+        }
+    }
+
+
+    public function deviceUpdate(Request $request){
+        $id=$request->input('id');
+        $data=Laptop::find($id);
+        $data->brand=$request->input('brand');
+        $data->processor=$request->input('processor');
+        $data->ram=$request->input('ram');
+        $data->hdd=$request->input('hdd');
+        $data->ssd=$request->input('ssd');
+        $data->status=$request->input('status');
+        $data=$data->save();
+        if($data){
+            return back()->with('msg',"Device Update Successfully");
+        }else{
+            return back()->with('err_msg',"Device Update Error");
+        }
+    }
+    
+    
+    public function productDetail($id,$system_type,$type){
+        //$data=Asset::where('id',$id)->first();
+        $data=DB::table('laptop');
+        $data->select('laptop.*','employee.name as empname');
+        $data->join('assign_table','assign_table.item_id','=','laptop.id');
+        $data->join('employee','employee.id','=','assign_table.assign');
+        $data->where('assign_table.type',$type);
+        $data->where('laptop.system_type',$system_type);
+        $data->orderBy('id','desc');
+        $data=$data->get();
+
+
+        return view('product-detail',compact('data'));
+    }
+    
+    
+    
+    public function getram(Request $request){
+        $id=$request->input('id');
+        $data=DB::table('custom_ram')->where('storage','!=',$id)->get();
+        $output="";
+        foreach($data as $value){
+            $output.="<option>".$value->storage."</option>";
+        }
+        return $output;
+        if($data){
+            return response()->json(["msg"=>true,"result"=>$data]);
+        }else{
+            return response()->json(["msg"=>false,"message"=>"Some Error"]);
         }
     }
 }

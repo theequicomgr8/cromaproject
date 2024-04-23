@@ -74,28 +74,31 @@
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" name="brand" class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name">
+                                 <input type="text" name="brand" required class="my-from-control" id="yourname" value="" placeholder="Enter Brand Name">
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">
-                                 <input type="text" name="configuration" id="mobile_code1" class="my-from-control" value="" placeholder="Enter Configuration">
+                                 <input type="text" name="configuration" required id="mobile_code1" class="my-from-control" value="" placeholder="Enter Configuration">
                            </div>
                         </div>
                      </div>                       
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" name="serial_no" id="mobile_code2" class="my-from-control " placeholder="Enter Product Serial No. ">
+                                 <input type="text" name="serial_no" required id="mobile_code2" class="my-from-control " placeholder="Enter Product Serial No. ">
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">
-                                 <select class="my-from-control selectcol course" name="status" id="" aria-label="Default select example" style="width: 100%;">
+                                 <select class="my-from-control selectcol course" name="status" required id="" aria-label="Default select example" style="width: 100%;">
                                     <option value="">Select Status</option>
-                                    <option>New</option>
-                                    <option>Old</option>
-                                    <option>In-Use</option>
+                                    @php 
+                                    $status=App\Models\Status::all();
+                                    @endphp
+                                    @foreach($status as $value)
+                                    <option value="{{$value->name}}">{{$value->name}}</option>
+                                    @endforeach
                                  </select>
                            </div>
                         </div>
@@ -118,20 +121,20 @@
                      <div class="row">
                         <div class="col-lg-6 pe-0">
                            <div class="form-re">
-                                 <input type="text" name="invoice_no" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice No.">
+                                 <input type="text" name="invoice_no" required class="my-from-control" id="yourname" value="" placeholder="Enter Invoice No.">
                            </div>
                         </div>
                         <div class="col-lg-6">
                            <div class="form-re">   
-                              <input type="date" name="invoice_date" value="" class="my-from-control" placeholder="Enter Invoice Date" required="">
+                              <input type="date" name="invoice_date" required value="" class="my-from-control" placeholder="Enter Invoice Date" required="">
                            </div>
                         </div>
                      </div>   
                      <div class="form-re">
-                        <input type="text" name="invoice_company_name" class="my-from-control" id="yourname" value="" placeholder="Enter Invoice Company Name">
+                        <input type="text" name="invoice_company_name" required class="my-from-control" id="yourname" value="" placeholder="Enter Invoice Company Name">
                      </div>  
                      <div class="form-re">   
-                        <input type="date" name="warranty_end" value="" class="my-from-control" placeholder="Warranty End Date" required="">
+                        <input type="date" name="warranty_end" value="" required class="my-from-control" placeholder="Warranty End Date" required="">
                      </div>             
                    
                </div>                  

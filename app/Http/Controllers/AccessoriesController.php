@@ -11,7 +11,7 @@ use App\Models\Assign;
 use App\Models\Employee;
 use App\Models\Asset;
 use DB;
-
+use Session;
 class AccessoriesController extends Controller
 {
     public function save(Request $request){
@@ -43,8 +43,12 @@ class AccessoriesController extends Controller
 
     //ram start
     public function ram(){
-        $total=Laptop::where('system_type','1')->count();
-        $used=Assign::distinct('item_id')->count();
+        //$total=Laptop::where('system_type','1')->count();
+        //$used=Assign::distinct('item_id')->count();
+        //$used=Assign::distinct('item_id')->where('type',3)->where('assign','!=','2')->count();
+        
+        $total=Asset::where('accessories_type','1')->count();
+        $used=Assign::distinct('item_id')->where('type',3)->where('assign','!=','2')->count();
         
         return view('ram',compact('total','used'));
     }
@@ -70,7 +74,14 @@ class AccessoriesController extends Controller
         $dir=$request->input('order.0.dir');
 
         if(!empty($request->input('search.value'))){
-
+            $record =  Asset::where('id','LIKE',"%{$search}%")
+                        ->orWhere('brand', 'LIKE',"%{$search}%")
+                        ->where('accessories_type','1')
+                        ->where('deletes','0')
+                        ->offset($start)
+                        ->limit($limit)
+                        ->orderBy($order,$dir)
+                        ->get();
         }else{
             $record=Asset::where('deletes','0')
                     ->where('accessories_type','1')
@@ -84,7 +95,7 @@ class AccessoriesController extends Controller
                 $assignname=Employee::where('id',$assign)->first()->name;
                 $action="<ul>
                 <li class='apporive-bgcheck'>
-                <a><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
+                <a class='accessoriesedit' data-id='".$value->id."' data-brand='".$value->brand."' data-configuration='".$value->configuration."' data-serial_no='".$value->serial_no."' data-status='".$value->status."' data-warranty_end='".$value->warranty_end."' data-invoice_no='".$value->invoice_no."' data-invoice_date='".$value->invoice_date."' data-invoice_company_name='".$value->invoice_company_name."' ><img src='".basepath('images/table-image/edit-icon.svg')."'></a>
                 </li>
                 <li class='red-bgmessage' title='Your Message Here'>
                 <a data-bs-toggle='modal' class='assignclick' data-id='".$value->id."' data-type='3' data-heading='Ram Assign' data-bs-target='#assign_device_popup'>
@@ -107,8 +118,8 @@ class AccessoriesController extends Controller
 
                 $result['id']=$value->systemid;
                 $result['brand']=$value->brand;
-                $result['configuration']=$value->configuration;
-                $result['serial_no']="<a href='/product-detail/$value->id'>".$value->serial_no."</a>";
+                $result['configuration']=$value->configuration;  //url/id/accessories_type/type
+                $result['serial_no']="<a href='/product-detail/$value->id/1/3'>".$value->serial_no."</a>";
                 $result['status']=$value->status;
                 $result['assign']=$assignname;//$value->assign;
                 // $result['SSD']="";
@@ -137,10 +148,10 @@ class AccessoriesController extends Controller
     public function ramSave(Request $request){
         $ramdata=Asset::where('accessories_type','1')->orderBy('id','desc')->first();
         
-        if(empty($ramdata->$systemid)){
+        if(empty($ramdata->systemid)){
             $systemid="01";
         }else{
-            $systemid=$ramdata->$systemid+1;
+            $systemid=$ramdata->systemid+1;
             if($systemid <10){
                 $systemid="0".$systemid;
             }
@@ -186,7 +197,8 @@ class AccessoriesController extends Controller
             $assign->type="3";
             //$assign->ram=$request->input('ram');
             $assign->item_id=$ram_data;
-            $assign->assign=$assignIT; //auto assign it admin
+            $assign->assign=Session::get('Auth_id');//$assignIT; //auto assign it admin
+            $assign->assign_by=Session::get('Auth_name');
             $assign->assign_date=date('y-m-d');
             $assign=$assign->save();
             if($assign){
@@ -210,6 +222,7 @@ class AccessoriesController extends Controller
         $assign->type="3";
         $assign->item_id=$request->input('deviceid');
         $assign->assign=$empid;
+        $assign->assign_by=Session::get('Auth_name');
         $assign->assign_date=$request->input('assign_date');
         $assign=$assign->save();
         if($assign){
@@ -225,7 +238,7 @@ class AccessoriesController extends Controller
         $type=$request->input('type');
         //$data=Assign::where('type',$type)->where('item_id',$id)->get();
         $data=DB::table('assign_table');
-        $data->select('employee.name as empname','assign_table.assign_date as assigndate');
+        $data->select('employee.name as empname','assign_table.assign_date as assigndate','assign_table.assign_by as assign_by');
         $data->join('ram','ram.id','=','assign_table.item_id');
         $data->join('employee','employee.id','=','assign_table.assign');
         $data->where('assign_table.type',$type);
@@ -243,19 +256,58 @@ class AccessoriesController extends Controller
 
 
 
-    public function productDetail($id){
+    public function productDetail($id,$accessories_type,$type){
         //$data=Asset::where('id',$id)->first();
         $data=DB::table('ram');
         $data->select('ram.*','employee.name as empname');
         $data->join('assign_table','assign_table.item_id','=','ram.id');
         $data->join('employee','employee.id','=','assign_table.assign');
-        $data->where('assign_table.type','3');
-        $data->where('ram.accessories_type','1');
+        $data->where('assign_table.type',$type);
+        $data->where('ram.accessories_type',$accessories_type);
         $data->orderBy('id','desc');
         $data=$data->get();
 
 
         return view('product-detail',compact('data'));
+    }
+
+
+    public function accessoriesUpdate(Request $request){
+        $id=$request->input('id');
+        $data=Asset::find($id);
+        $data->brand=$request->input('brand');
+        $data->configuration=$request->input('configuration');
+        $data->serial_no=$request->input('serial_no');
+        $data->status=$request->input('status');
+        $data->warranty_end=$request->input('warranty_end');
+        $data->invoice_no=$request->input('invoice_no');
+        $data->invoice_date=$request->input('invoice_date');
+        $data->invoice_company_name=$request->input('invoice_company_name');
+
+        if($file=$request->has('device_pic')){
+            $file=$request->file('device_pic');
+            $device_pic=time().'-'.$file->getClientOriginalName();
+            $file->move(public_path('/ram'),$device_pic);
+        }
+
+        if($file1=$request->has('invoice_file')){
+            $file1=$request->file('invoice_file');
+            $invoice_file=time().'-'.$file1->getClientOriginalName();
+            $file1->move(public_path('/ram'),$invoice_file);
+        }
+        if(!empty($device_pic)){
+            $data->device_pic=$device_pic;
+        }
+        if(!empty($invoice_file)){
+            $data->invoice_file=$invoice_file;
+        }
+
+        $data=$data->save();
+        if($data){
+            return back()->with('msg',"Accessories Update Successfully");
+        }else{
+            return back()->with('msg',"Accessories Update Error");
+        }
     }
 
 

@@ -145,7 +145,7 @@ function getemp(input){
           console.log(ary[i]['name']);
           html+='<div class="search-assign-persone d-flex align-items-center justify-content-between">';
           html+='<div class="assign-pe-det d-flex gap-2 align-items-center">';
-          html+='<img src="http://127.0.0.1:8000/asset/images/user-img/user.svg" alt="user">';
+          html+='<img src="https://employment.cromacampus.com/public/asset/images/user-img/user.svg" alt="user">';
           html+='<h4>"'+ary[i]["name"]+'" <span>"'+ary[i]["empcode"]+'"</span></h4>';
           html+='</div>';
           html+='<input type="radio" name="checked" id="" data-cid="'+ary[i]["empcode"]+'" data-name="'+ary[i]["name"]+'" class="click_radio">';
@@ -191,12 +191,12 @@ $(document).on("click",".laptopassignhistory",function(){
         for(var i=0;i<ary.length;i++){
           html+="<tr>";
           html+="<td>";
-          html+='<img src="http://127.0.0.1:8000/asset/images/user-img/user.svg" alt="user">';
+          html+='<img src="https://employment.cromacampus.com/public/asset/images/user-img/user.svg" alt="user">';
           html+=ary[i]['empname'];
           html+="</td>";
           html+="<td>"+ary[i]['assigndate']+"</td>";
           html+="<td>NA</td>";
-          html+="<td>NA</td>";
+          html+="<td>"+ary[i]['assign_by']+"</td>";
           html+="</tr>";
         }
         $("#assignhistorytable").append(html);
@@ -226,12 +226,12 @@ $(document).on("click",".asso-assignhistory",function(){
         for(var i=0;i<ary.length;i++){
           html+="<tr>";
           html+="<td>";
-          html+='<img src="http://127.0.0.1:8000/asset/images/user-img/user.svg" alt="user">';
+          html+='<img src="https://employment.cromacampus.com/public/asset/images/user-img/user.svg" alt="user">';
           html+=ary[i]['empname'];
           html+="</td>";
           html+="<td>"+ary[i]['assigndate']+"</td>";
           html+="<td>NA</td>";
-          html+="<td>NA</td>";
+          html+="<td>"+ary[i]['assign_by']+"</td>";
           html+="</tr>";
         }
         $("#assignhistorytable").append(html);
@@ -256,5 +256,81 @@ $(document).on("click",".devicedelete",function(){
     });
   }
   
+});
+
+
+
+$(document).on('click','.deviceedit',function(){
+  $("#edit_device_name_model").modal('show');
+  var id=$(this).attr('data-id');
+  var brand=$(this).attr('data-brand');
+  var processor=$(this).attr('data-processor');
+  var ram=$(this).attr('data-ram');
+  var hdd=$(this).attr('data-hdd');
+  var ssd=$(this).attr('data-ssd');
+  var status=$(this).attr('data-status');
+
+  $("#deviceid").val(id);
+  $("#devicebrand").val(brand);
+  $("#deviceprocessor").val(processor);
+  var ramhtml="<option value='"+ram+"' selected>"+ram+"</option>";
+  $("#deviceram").html(ramhtml);
+  $("#devicehdd").val(hdd);
+  $("#devicessd").val(ssd);
+  var statushtml="<option value='"+status+"' selected>"+status+"</option>";
+  $("#devicestatus").html(statushtml);
+
+
+});
+
+
+
+$(document).on("click",".accessoriesedit",function(){
+  $("#edit_accessories_name_model").modal('show');
+  var id=$(this).attr('data-id');
+  var brand=$(this).attr('data-brand');
+  var configuration=$(this).attr('data-configuration');
+  var serial_no=$(this).attr('data-serial_no');
+  var status=$(this).attr('data-status');
+  var warranty_end=$(this).attr('data-warranty_end');
+  var invoice_no=$(this).attr('data-invoice_no');
+  var invoice_date=$(this).attr('data-invoice_date');
+  var invoice_company_name=$(this).attr('data-invoice_company_name');
+
+  $("#accessoriesid").val(id);
+  $("#accessoriesbrand").val(brand);
+  $("#accessoriesconfiguration").val(configuration);
+  $("#accessoriesserial_no").val(serial_no);
+
+  var statushtml="<option value='"+status+"' selected>"+status+"</option>";
+  $("#accessoriesstatus").html(statushtml);
+  
+  $("#accessorieswarranty_end").val(warranty_end);
+  $("#accessoriesinvoice_no").val(invoice_no);
+  $("#accessoriesinvoice_date").val(invoice_date);
+  $("#accessoriesinvoice_company_name").val(invoice_company_name);
+});
+
+
+
+
+$("#deviceram").click(function(){
+    var id=$(this).val();
+    $.ajax({
+        url : '/get-ram',
+        type: 'GET',
+        data: {id:id},
+        success:function(data){
+            // if(data.status==true){
+            //     var ary=data.result;
+            //     var html="";
+            //     for(var i=0;i<ary.length;i++){
+            //         html+="<option>"+ary[i]['storage']+"</option>";
+            //     }
+            //     $("#deviceram").append(html);
+            // }
+            $("#deviceram").append(data);
+        }
+    });
 });
  

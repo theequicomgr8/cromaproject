@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Dashboard;
 use App\Models\Accessories;
+use Session;
 class DashboardController extends Controller
 {
+    public function __construct()
+    {
+        $Authid=Session::get('Auth_id');
+        $this->Authname=Session::get('Auth_name');
+        $Authrole=Session::get('role');
+    }
     public function index(){
+        
         $data=Dashboard::all();
         $accessories=Accessories::all();
         return view('dashboard',compact('data','accessories'));

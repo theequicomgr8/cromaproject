@@ -11,16 +11,16 @@
                   <div class="urser-details">
                      <div class="dropdown img-user d-flex justify-content-end align-items-center">
                         <h2 class="mb-0 dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
-                           <img src="{{basepath('images/user-logo.svg')}}" alt="user">Rajeev Mehta
+                           <img src="{{basepath('images/user-logo.svg')}}" alt="user">{{Session::get('Auth_name') ?? ''}}
                         </h2>
                         <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton4">
-                           <li><a class="dropdown-item " href="#">Devendra (Admin) <img src="{{basepath('images/Edit_fill.svg')}}" alt="Edit_fill"></a> </li>
-                           <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changepassword">Change Password</a></li>
+                           <!-- <li><a class="dropdown-item " href="#">{{Session::get('Auth_name') ?? ''}} ({{Session::get('role') ?? ''}}) <img src="{{basepath('images/Edit_fill.svg')}}" alt="Edit_fill"></a> </li> -->
+                           <!-- <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changepassword">Change Password</a></li> -->
 
                            <li>
-                              <hr class="dropdown-divider">
+                              <!-- <hr class="dropdown-divider"> -->
                            </li>
-                           <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-left-from-arc"></i>Logout</a></li>
+                           <li><a class="dropdown-item" href="{{Route('logout')}}"><i class="fa-solid fa-arrow-left-from-arc"></i>Logout</a></li>
                         </ul>
                      </div>
                   </div>

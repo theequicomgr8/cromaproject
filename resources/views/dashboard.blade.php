@@ -27,11 +27,12 @@
                   <div class="assist-list-box">
                    <h4>Devices</h4>
                      <div class="grid-four mt-4">
-                        @foreach($data as $value)
+                        @foreach($data as $key => $value)
                         @php
-                        $color=["bg-grad-green1","bg-grad-green1","bg-grad-blue1","bg-grad-orange1","bg-grad-red1","bg-grad-green2","bg-grad-pink1","bg-grad-blue2","bg-grad-sk1","bg-grad-sk2","bg-grad-sk3"];
-                        $k = array_rand($color);
-                        $col = $color[$k];
+                        $color=["bg-grad-green1","bg-grad-blue1","bg-grad-orange1","bg-grad-red1","bg-grad-green2","bg-grad-pink1","bg-grad-blue2","bg-grad-sk1","bg-grad-sk2","bg-grad-sk3"];
+                        //$k = array_rand($color);
+                        //$col = $color[$k];
+                        $col=$color[$key];
                         @endphp
                         <a href="{{$value->blade_name}}" class="ass-box-list1 {{$col}} d-flex align-items-center gap-3">
                            <img src="{{basepath('device/'.$value->pic)}}" alt="laptop-icon"> 
